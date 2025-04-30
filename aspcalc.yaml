@@ -1,0 +1,40 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: asp-calculator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: asp-calculator
+  template:
+    metadata:
+      labels:
+        app: asp-calculator
+    spec:
+      containers:
+      - name: asp-calculator
+        image: simgr01/asp-calculator
+        ports:
+        - containerPort: 8080  # Updated to 808
+        resources:
+          requests:
+            cpu: 200m
+          limits:
+            cpu: 500m
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: asp-calculator
+spec:
+  type: NodePort
+  selector:
+    app: asp-calculator
+  ports:
+    - protocol: TCP
+      port: 80        # Kubernetes service port (internal cluster access)
+      targetPort: 8080 # Matches the containerPort inside the pod
+      nodePort: 30081  # Port exposed on the node
